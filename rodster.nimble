@@ -1,4 +1,4 @@
-version     = "0.1.0"
+version     = "0.1.1"
 author      = "Javier Santo Domingo"
 description = "rodster"
 license     = "MIT"

@@ -1,5 +1,7 @@
 # rodster
 ##
+# PRIMARY SOURCE
+
 # DEFINITIONS AND INCLUDES
 
 when defined(nimHasUsed):
@@ -7,7 +9,9 @@ when defined(nimHasUsed):
 
 import xam
 
-let
-  VERSION* = newSemanticVersion(0, 1, 0)
-
 reexport(rodster/application, application)
+
+# CONSTANTS
+
+let
+  VERSION* = newSemanticVersion(0, 1, 1)

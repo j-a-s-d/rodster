@@ -29,6 +29,9 @@ app.run()
 ```
 
 ## HISTORY
+* 23-04-21 *[0.1.1]*
+	- added info example
+	- added documentation comments
 * 20-04-21 *[0.1.0]*
 	- first release
 * 14-04-21 *[0.0.1]*
