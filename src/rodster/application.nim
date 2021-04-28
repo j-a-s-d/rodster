@@ -9,7 +9,13 @@ reexport(settings, settings)
 reexport(seh, seh)
 
 type
+  TRodsterAppStep = enum
+    raStopped,
+    raInitializing,
+    raRunning,
+    raFinalizing
   TRodsterApplication = object
+    step: TRodsterAppStep
     events: RodsterAppEvents
     information: RodsterAppInformation
     settings: RodsterAppSettings
@@ -24,6 +30,10 @@ type
 
 let
   DEFAULT_APPEVENT_HANDLER: RodsterAppEvent = proc (app: RodsterApplication) = discard
+
+proc isRunning*(app: RodsterApplication): bool =
+  ## Determines if the application is running.
+  app.step != raStopped
 
 proc getInformation*(app: RodsterApplication): RodsterAppInformation =
   ## Gets the information object instance.
@@ -49,7 +59,8 @@ proc setFinalizationHandler*(app: RodsterApplication, onFinalize: RodsterAppEven
   ## Sets the finalization handler.
   app.events.finalizer = onFinalize
 
-proc step(app: RodsterApplication, procedure: NoArgsProc[void]): bool =
+proc performStep(app: RodsterApplication, step: TRodsterAppStep, procedure: NoArgsProc[void]): bool =
+  app.step = step
   var e: ref Exception
   catch(procedure, e)
   result = e == nil
@@ -59,13 +70,15 @@ proc step(app: RodsterApplication, procedure: NoArgsProc[void]): bool =
 proc run*(app: RodsterApplication) =
   ## Runs the application.
   app.seh.forgetLastException()
-  if app.step(() => app.events.initializer(app)):
-    if app.step(() => app.events.main(app)):
-      discard app.step(() => app.events.finalizer(app))
+  if app.performStep(raInitializing, () => app.events.initializer(app)):
+    if app.performStep(raRunning, () => app.events.main(app)):
+      discard app.performStep(raFinalizing, () => app.events.finalizer(app))
+  app.step = raStopped
 
 proc newRodsterApplication*(): RodsterApplication =
   ## Constructs a new application object instance.
   result = new TRodsterApplication
+  result.step = raStopped
   result.events = (
     initializer: DEFAULT_APPEVENT_HANDLER,
     main: DEFAULT_APPEVENT_HANDLER,

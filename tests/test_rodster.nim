@@ -64,16 +64,21 @@ suite "test rodster":
   var s: string = STRINGS.EMPTY
   test "test run":
     app.setInitializationHandler (app: RodsterApplication) => (
+      check(app.isRunning());
       s = "initialize"
     )
     app.setMainRoutine proc (app: RodsterApplication) =
+      check(app.isRunning())
       check(s == "initialize")
       s = "main"
     app.setFinalizationHandler((app: RodsterApplication) => (
+      check(app.isRunning());
       check(s == "main");
       s = "finalize"
     ))
+    check(not app.isRunning())
     app.run()
+    check(not app.isRunning())
     check(s == "finalize")
     check(not app.getSeh().hadException())
     app.setMainRoutine (app: RodsterApplication) => throw(IOError, "blah")
