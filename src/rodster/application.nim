@@ -8,6 +8,7 @@ reexport(information, information)
 reexport(settings, settings)
 reexport(seh, seh)
 reexport(i18n, i18n)
+reexport(kvm, kvm)
 
 type
   TRodsterAppStep = enum
@@ -22,6 +23,7 @@ type
     settings: RodsterAppSettings
     seh: RodsterAppSeh
     i18n: RodsterAppI18n
+    kvm: RodsterAppKvm
   RodsterApplication* = ref TRodsterApplication
   RodsterAppEvent* = proc (app: RodsterApplication)
   RodsterAppEvents* = tuple [
@@ -52,6 +54,10 @@ proc getSeh*(app: RodsterApplication): RodsterAppSeh =
 proc getI18n*(app: RodsterApplication): RodsterAppI18n =
   ## Gets the i18n object instance.
   app.i18n
+
+proc getKvm*(app: RodsterApplication): RodsterAppKvm =
+  ## Gets the kvm object instance.
+  app.kvm
 
 proc setInitializationHandler*(app: RodsterApplication, onInitialize: RodsterAppEvent) =
   ## Set the initialization handler.
@@ -94,3 +100,4 @@ proc newRodsterApplication*(): RodsterApplication =
   result.settings = newRodsterAppSettings()
   result.seh = newRodsterAppSeh()
   result.i18n = newRodsterAppI18n()
+  result.kvm = newRodsterAppKvm()

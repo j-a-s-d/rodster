@@ -71,12 +71,17 @@ suite "test rodster":
   test "test internationalization":
     let i18n = app.getI18n()
     check(i18n != nil)
+    check(i18n.getCurrentLocale() == "")
+    check(i18n.getText("strings.hey") == "")
     check(i18n.loadTextsFromJArray("EN", msg1))
+    check(i18n.getCurrentLocale() == "EN")
     check(i18n.loadTextsFromJArray("ES", msg2))
+    check(i18n.getCurrentLocale() == "EN")
     check(i18n.getText("strings.hey") == "hello")
     check(i18n.getText("strings.hey", @[]) == "hello")
     check(i18n.getText("strings.hey", @["world"]) == "hello")
     i18n.setCurrentLocale("ES")
+    check(i18n.getCurrentLocale() == "ES")
     check(i18n.getText("strings.hey") == "hola")
     i18n.setCurrentLocale("PT")
     check(i18n.getText("strings.hey") == "hello")
@@ -86,6 +91,22 @@ suite "test rodster":
     check(i18n.getText("strings.blah", @["blah2"]) == "blah1 $1 $2 blah4")
     check(i18n.getText("strings.blah", @[]) == "blah1 $1 $2 blah4")
     check(i18n.getText("strings.blah") == "blah1 $1 $2 blah4")
+
+  test "test kvm":
+    let kvm = app.getKvm()
+    check(kvm != nil)
+    check(kvm.len == 0)
+    check(not kvm.hasKey("test"))
+    check(kvm.getKey("test") == "")
+    kvm.setKey("test", "hey")
+    check(kvm.len == 1)
+    check(kvm.hasKey("test"))
+    check(kvm.getKey("test") == "hey")
+    kvm.setKey("test", "blah")
+    check(kvm.getKey("test") == "blah")
+    kvm.dropKey("test")
+    check(kvm.getKey("test") == "")
+    check(kvm.len == 0)
 
   var s: string = STRINGS.EMPTY
   test "test run":

@@ -6,6 +6,8 @@ an application framework for nim
 * inverse-of-control (IoC), *allowing separation-of-concerns (SoC) between application initialization/finalization and the main program routine*
 * self-exception handling (SEH), *allowing secure execution and extended control on program flow*
 * modelled json settings, *allowing an easy, secure and structured way to validate and handle the application configuration*
+* internationalization support (I18n), *allowing localization (L10n) for the application messages*
+* multipurpose key value map, *allowing an easy application instance values management in an already integrated key-value store*
 
 ## CHARACTERISTICS
 
@@ -149,7 +151,30 @@ app.run()
 
 ```
 
+### VALUES
+
+This example helps to understand how to use the application integrated multipurpose key-value store.
+
+```nim
+
+import rodster, xam
+
+let app = newRodsterApplication()
+app.getInformation().setTitle("values test app")
+app.getInformation().setVersion("1.0.0")
+app.setInitializationHandler proc (app: RodsterApplication) =
+  app.getKvm().setKey("some-key", "some-value")
+app.setMainRoutine proc (app: RodsterApplication) =
+  echo "the app has the key 'some-key' with a value of: " & app.getKvm().getKey("some-key")
+app.setFinalizationHandler proc (app: RodsterApplication) =
+  app.getKvm().dropKey("some-key")
+app.run()
+
+```
+
 ## HISTORY
+* 24-05-21 *[0.2.1]*
+	- addded multipurpose key value map module
 * 23-05-21 *[0.2.0]*
 	- added localization example
 	- added internationalization module
