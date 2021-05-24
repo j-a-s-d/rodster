@@ -7,6 +7,7 @@ import xam
 reexport(information, information)
 reexport(settings, settings)
 reexport(seh, seh)
+reexport(i18n, i18n)
 
 type
   TRodsterAppStep = enum
@@ -20,6 +21,7 @@ type
     information: RodsterAppInformation
     settings: RodsterAppSettings
     seh: RodsterAppSeh
+    i18n: RodsterAppI18n
   RodsterApplication* = ref TRodsterApplication
   RodsterAppEvent* = proc (app: RodsterApplication)
   RodsterAppEvents* = tuple [
@@ -46,6 +48,10 @@ proc getSettings*(app: RodsterApplication): RodsterAppSettings =
 proc getSeh*(app: RodsterApplication): RodsterAppSeh =
   ## Gets the seh object instance.
   app.seh
+
+proc getI18n*(app: RodsterApplication): RodsterAppI18n =
+  ## Gets the i18n object instance.
+  app.i18n
 
 proc setInitializationHandler*(app: RodsterApplication, onInitialize: RodsterAppEvent) =
   ## Set the initialization handler.
@@ -87,3 +93,4 @@ proc newRodsterApplication*(): RodsterApplication =
   result.information = newRodsterAppInformation()
   result.settings = newRodsterAppSettings()
   result.seh = newRodsterAppSeh()
+  result.i18n = newRodsterAppI18n()

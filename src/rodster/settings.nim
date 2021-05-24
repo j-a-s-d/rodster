@@ -65,7 +65,7 @@ proc getFilename*(sets: RodsterAppSettings): string =
   ## Retrieves the file name from where the settings are loaded.
   sets.filename
 
-proc loadFromObject*(sets: RodsterAppSettings, obj: JsonNode): bool =
+proc loadFromJObject*(sets: RodsterAppSettings, obj: JsonNode): bool =
   ## Loads the settings from the specified json object and returns the success result.
   sets.fromFile = false
   sets.validated = false
@@ -78,7 +78,7 @@ proc loadFromObject*(sets: RodsterAppSettings, obj: JsonNode): bool =
 proc loadFromFile*(sets: RodsterAppSettings, filename: string): bool =
   ## Loads the settings from the specified json file and returns the success result.
   sets.filename = filename
-  sets.fromFile = sets.loadFromObject(loadJsonNodeFromFile(sets.filename))
+  sets.fromFile = sets.loadFromJObject(loadJsonNodeFromFile(sets.filename))
   sets.fromFile
 
 proc reload*(sets: RodsterAppSettings): bool =
@@ -86,7 +86,7 @@ proc reload*(sets: RodsterAppSettings): bool =
   if sets.fromFile:
     sets.loadFromFile(sets.filename)
   else:
-    sets.loadFromObject(sets.data)
+    sets.loadFromJObject(sets.data)
 
 proc newRodsterAppSettings*(): RodsterAppSettings =
   ## Constructs a new settings object instance.

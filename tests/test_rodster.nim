@@ -11,6 +11,13 @@ suite "test rodster":
   let cfg2 = parseJson("""
     { "i": 456, "b": false, "f": 456.78, "s": "world", "a": [4, 5, 6] }
   """)
+  let msg1 = parseJson("""[
+    { "code": "strings.hey", "message": "hello" },
+    { "code": "strings.blah", "message": "blah1 $1 $2 blah4" }
+  ]""")
+  let msg2 = parseJson("""[
+    { "code": "strings.hey", "message": "hola" }
+  ]""")
   let app = newRodsterApplication()
 
   const
@@ -44,7 +51,7 @@ suite "test rodster":
     check(sets.getFilename() == "")
     sets.getModel().defineMandatoryInteger("i").defineMandatoryString("s").defineMandatoryBoolean("b").defineMandatoryFloat("f").registerOptionalArray("a")
     check(sets.getModel().len == 5)
-    check(sets.loadFromObject(cfg1))
+    check(sets.loadFromJObject(cfg1))
     check(sets.getAsInteger("i") == 123)
     check(sets.getAsFloat("f") == 123.45)
     check(sets.reload())
@@ -60,6 +67,25 @@ suite "test rodster":
     check(sets.getAsBoolean("b") == false)
     check(sets.getAsString("s") == "world")
     removeFile(CFG_FILE)
+
+  test "test internationalization":
+    let i18n = app.getI18n()
+    check(i18n != nil)
+    check(i18n.loadTextsFromJArray("EN", msg1))
+    check(i18n.loadTextsFromJArray("ES", msg2))
+    check(i18n.getText("strings.hey") == "hello")
+    check(i18n.getText("strings.hey", @[]) == "hello")
+    check(i18n.getText("strings.hey", @["world"]) == "hello")
+    i18n.setCurrentLocale("ES")
+    check(i18n.getText("strings.hey") == "hola")
+    i18n.setCurrentLocale("PT")
+    check(i18n.getText("strings.hey") == "hello")
+    i18n.setCurrentLocale("EN")
+    check(i18n.getText("strings.blah", @["blah2", "blah3"]) == "blah1 blah2 blah3 blah4")
+    check(i18n.getText("strings.blah", @["blah2", "blah3", "blah5"]) == "blah1 blah2 blah3 blah4")
+    check(i18n.getText("strings.blah", @["blah2"]) == "blah1 $1 $2 blah4")
+    check(i18n.getText("strings.blah", @[]) == "blah1 $1 $2 blah4")
+    check(i18n.getText("strings.blah") == "blah1 $1 $2 blah4")
 
   var s: string = STRINGS.EMPTY
   test "test run":

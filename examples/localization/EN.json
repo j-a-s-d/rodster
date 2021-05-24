@@ -1,0 +1,4 @@
+[
+    { "code":"strings.hello", "message":"Hello $1!" },
+    { "code":"strings.bye", "message":"Bye!" }
+]
