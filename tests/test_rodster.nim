@@ -68,7 +68,7 @@ suite "test rodster":
     check(sets.getAsString("s") == "world")
     removeFile(CFG_FILE)
 
-  test "test internationalization":
+  test "test i18n":
     let i18n = app.getI18n()
     check(i18n != nil)
     check(i18n.getCurrentLocale() == "")
@@ -136,3 +136,19 @@ suite "test rodster":
     check(e.msg == "blah")
     app.getSeh().forgetLastException()
     check(not app.getSeh().hadException())
+    check(not app.wasTerminated())
+    app.setInitializationHandler (app: RodsterApplication) => (s = "from init"; app.terminate())
+    app.setMainRoutine (app: RodsterApplication) => (s = "from main")
+    app.setFinalizationHandler (app: RodsterApplication) => (s &= " (but finalized)")
+    app.run()
+    check(s == "from init (but finalized)")
+    check(app.wasTerminated())
+    app.setInitializationHandler (app: RodsterApplication) => (s = "from init")
+    app.setMainRoutine (app: RodsterApplication) => (s = "from main"; app.terminate(); s = "wont happen")
+    app.setFinalizationHandler (app: RodsterApplication) => (s &= " (but finalized)")
+    app.run()
+    check(s == "from main (but finalized)")
+    check(app.wasTerminated())
+    app.setMainRoutine (app: RodsterApplication) => (s = "blah")
+    app.run()
+    check(not app.wasTerminated())

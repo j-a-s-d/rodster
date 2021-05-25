@@ -14,4 +14,4 @@ reexport(rodster/application, application)
 # CONSTANTS
 
 let
-  VERSION* = newSemanticVersion(0, 2, 1)
+  VERSION* = newSemanticVersion(0, 3, 0)

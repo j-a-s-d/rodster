@@ -16,7 +16,9 @@ type
     raInitializing,
     raRunning,
     raFinalizing
+  TRodsterAppTerminated = object of CatchableError
   TRodsterApplication = object
+    terminated: bool
     step: TRodsterAppStep
     events: RodsterAppEvents
     information: RodsterAppInformation
@@ -34,6 +36,10 @@ type
 
 let
   DEFAULT_APPEVENT_HANDLER: RodsterAppEvent = proc (app: RodsterApplication) = discard
+
+proc wasTerminated*(app: RodsterApplication): bool =
+  ## Returns true if the application was user terminated in the last run or false otherwise.
+  app.terminated
 
 proc isRunning*(app: RodsterApplication): bool =
   ## Determines if the application is running.
@@ -77,19 +83,30 @@ proc performStep(app: RodsterApplication, step: TRodsterAppStep, procedure: NoAr
   catch(procedure, e)
   result = e == nil
   if not result:
-    app.seh.setLastException(e)
+    app.terminated = e.name == "TRodsterAppTerminated"
+    if not app.terminated:
+      app.seh.setLastException(e)
 
 proc run*(app: RodsterApplication) =
   ## Runs the application.
+  app.terminated = false
   app.seh.forgetLastException()
   if app.performStep(raInitializing, () => app.events.initializer(app)):
     if app.performStep(raRunning, () => app.events.main(app)):
       discard app.performStep(raFinalizing, () => app.events.finalizer(app))
   app.step = raStopped
 
+proc terminate*(app: RodsterApplication) =
+  ## Terminates the application.
+  ## NOTE: it will run the finalizer if invoked in initialization or running steps.
+  if app.step == raInitializing or app.step == raRunning:
+    discard app.performStep(raFinalizing, () => app.events.finalizer(app))
+    throw(TRodsterAppTerminated, STRINGS_EMPTY)
+
 proc newRodsterApplication*(): RodsterApplication =
   ## Constructs a new application object instance.
   result = new TRodsterApplication
+  result.terminated = false
   result.step = raStopped
   result.events = (
     initializer: DEFAULT_APPEVENT_HANDLER,

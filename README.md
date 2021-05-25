@@ -173,8 +173,10 @@ app.run()
 ```
 
 ## HISTORY
+* 25-05-21 *[0.3.0]*
+	- added RodsterApplication.terminate() and RodsterApplication.wasTerminated()
 * 24-05-21 *[0.2.1]*
-	- addded multipurpose key value map module
+	- added multipurpose key value map module
 * 23-05-21 *[0.2.0]*
 	- added localization example
 	- added internationalization module
