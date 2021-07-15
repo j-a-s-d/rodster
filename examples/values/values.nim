@@ -6,13 +6,15 @@
 
 import rodster, xam
 
-let app = newRodsterApplication()
-app.getInformation().setTitle("values test app")
-app.getInformation().setVersion("1.0.0")
+let app = newRodsterApplication("values test app", "1.0.0")
 app.setInitializationHandler proc (app: RodsterApplication) =
-  app.getKvm().setKey("some-key", "some-value")
+  let kvm = app.getKvm()
+  kvm.setKey("some-key", "some-value")
+  kvm["other-key"] = "other-value"
 app.setMainRoutine proc (app: RodsterApplication) =
-  echo "the app has the key 'some-key' with a value of: " & app.getKvm().getKey("some-key")
+  let kvm = app.getKvm()
+  echo "the app has the key 'some-key' with a value of: " & kvm.getKey("some-key")
+  echo "and also the key 'other-key' with a value of: " & kvm["other-key"]
 app.setFinalizationHandler proc (app: RodsterApplication) =
   app.getKvm().dropKey("some-key")
 app.run()

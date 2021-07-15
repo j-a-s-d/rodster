@@ -103,7 +103,7 @@ proc terminate*(app: RodsterApplication) =
     discard app.performStep(raFinalizing, () => app.events.finalizer(app))
     throw(TRodsterAppTerminated, STRINGS_EMPTY)
 
-proc newRodsterApplication*(): RodsterApplication =
+proc newRodsterApplication*(title: string = "", version: string = ""): RodsterApplication =
   ## Constructs a new application object instance.
   result = new TRodsterApplication
   result.terminated = false
@@ -114,6 +114,10 @@ proc newRodsterApplication*(): RodsterApplication =
     finalizer: DEFAULT_APPEVENT_HANDLER
   )
   result.information = newRodsterAppInformation()
+  if hasText(title):
+    result.information.setTitle(title)
+  if hasText(version):
+    result.information.setVersion(version)
   result.settings = newRodsterAppSettings()
   result.seh = newRodsterAppSeh()
   result.i18n = newRodsterAppI18n()

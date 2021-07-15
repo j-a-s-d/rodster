@@ -22,6 +22,14 @@ proc getKey*(kvm: RodsterAppKvm, key: string): string =
   if kvm.values.hasKey(key):
     return kvm.values[key]
 
+proc `[]=`*(kvm: RodsterAppKvm, key: string, value: string) =
+  ## Key value map setter.
+  kvm.setKey(key, value)
+
+proc `[]`*(kvm: RodsterAppKvm, key: string): string =
+  ## Key value map getter.
+  kvm.getKey(key)
+
 proc hasKey*(kvm: RodsterAppKvm, key: string): bool =
   ## Checks if the specified key exists at the key value map.
   kvm.values.hasKey(key)
