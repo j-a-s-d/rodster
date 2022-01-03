@@ -175,6 +175,10 @@ app.run()
 ```
 
 ## HISTORY
+* 03-01-22 *[1.1.0]*
+	- added app events getter and setter
+	- added individual app events getters
+	- updated xam dependency
 * 15-07-21 *[1.0.0]*
 	- added app constructor overload accepting title and version
 	- added kvm getter and setter array access operators

@@ -110,6 +110,15 @@ suite "test rodster":
 
   var s: string = STRINGS.EMPTY
   test "test run":
+    let evs = app.getEvents()
+    check(evs.initializer == DEFAULT_APPEVENT_HANDLER)
+    check(evs.main == DEFAULT_APPEVENT_HANDLER)
+    check(evs.finalizer == DEFAULT_APPEVENT_HANDLER)
+    let nevs: RodsterAppEvents = (initializer: nil, main: nil, finalizer: nil)
+    app.setEvents(nevs)
+    check(app.getInitializationHandler() == nil)
+    check(app.getMainRoutine() == nil)
+    check(app.getFinalizationHandler() == nil)
     app.setInitializationHandler (app: RodsterApplication) => (
       check(app.isRunning());
       s = "initialize"

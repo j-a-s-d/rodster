@@ -19,7 +19,7 @@ proc setCurrentLocale*(i18n: RodsterAppI18n, locale: string) =
   ## Sets the current locale.
   ## NOTE: if it is the first to be set, it will be established as default also.
   i18n.locale = locale
-  if i18n.default == STRINGS_EMPTY:
+  if isEmpty(i18n.default):
     i18n.default = locale
 
 proc resetLocaleTexts*(i18n: RodsterAppI18n, locale: string) =
@@ -44,11 +44,11 @@ proc getText*(i18n: RodsterAppI18n, locale: string, key: string, values: seq[str
     silent proc () = msg = msg % values
     return msg
   if i18n.hasText(locale, key):
-    return processText(locale)
+    processText(locale)
   elif i18n.hasText(i18n.default, key):
-    return processText(i18n.default)
+    processText(i18n.default)
   else:
-    return STRINGS_EMPTY
+    STRINGS_EMPTY
 
 proc getText*(i18n: RodsterAppI18n, key: string, values: seq[string]): string =
   ## Gets the text for the specified key processed with the specified values for the current locale.
@@ -67,7 +67,7 @@ proc loadTextsFromJArray*(i18n: RodsterAppI18n, locale: string, arr: JsonNode): 
   ## NOTE: strings are added to the existing ones for the current locale.
   ## NOTE: if the current locale is not set yet, it is set to this locale by default.
   if isJArray(arr):
-    if i18n.locale == STRINGS_EMPTY:
+    if isEmpty(i18n.locale):
       i18n.setCurrentLocale(locale)
     if not i18n.strings.hasKey(locale):
       i18n.resetLocaleTexts(locale)

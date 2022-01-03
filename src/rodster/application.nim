@@ -35,7 +35,12 @@ type
   ]
 
 let
-  DEFAULT_APPEVENT_HANDLER: RodsterAppEvent = proc (app: RodsterApplication) = discard
+  DEFAULT_APPEVENT_HANDLER*: RodsterAppEvent = proc (app: RodsterApplication) = discard
+  DEFAULT_APPEVENTS*: RodsterAppEvents = (
+    initializer: DEFAULT_APPEVENT_HANDLER,
+    main: DEFAULT_APPEVENT_HANDLER,
+    finalizer: DEFAULT_APPEVENT_HANDLER
+  )
 
 proc wasTerminated*(app: RodsterApplication): bool =
   ## Returns true if the application was user terminated in the last run or false otherwise.
@@ -65,13 +70,33 @@ proc getKvm*(app: RodsterApplication): RodsterAppKvm =
   ## Gets the kvm object instance.
   app.kvm
 
+proc getEvents*(app: RodsterApplication): RodsterAppEvents =
+  ## Gets the app events.
+  app.events
+
+proc setEvents*(app: RodsterApplication, events: RodsterAppEvents) =
+  ## Sets the app events all at once.
+  app.events = events
+
+proc getInitializationHandler*(app: RodsterApplication): RodsterAppEvent =
+  ## Gets the initialization handler.
+  app.events.initializer
+
 proc setInitializationHandler*(app: RodsterApplication, onInitialize: RodsterAppEvent) =
-  ## Set the initialization handler.
+  ## Sets the initialization handler.
   app.events.initializer = onInitialize
+
+proc getMainRoutine*(app: RodsterApplication): RodsterAppEvent =
+  ## Gets the main routine.
+  app.events.main
 
 proc setMainRoutine*(app: RodsterApplication, programMain: RodsterAppEvent) =
   ## Sets the main routine.
   app.events.main = programMain
+
+proc getFinalizationHandler*(app: RodsterApplication): RodsterAppEvent =
+  ## Gets the finalization handler.
+  app.events.finalizer
 
 proc setFinalizationHandler*(app: RodsterApplication, onFinalize: RodsterAppEvent) =
   ## Sets the finalization handler.
@@ -108,11 +133,7 @@ proc newRodsterApplication*(title: string = "", version: string = ""): RodsterAp
   result = new TRodsterApplication
   result.terminated = false
   result.step = raStopped
-  result.events = (
-    initializer: DEFAULT_APPEVENT_HANDLER,
-    main: DEFAULT_APPEVENT_HANDLER,
-    finalizer: DEFAULT_APPEVENT_HANDLER
-  )
+  result.events = DEFAULT_APPEVENTS
   result.information = newRodsterAppInformation()
   if hasText(title):
     result.information.setTitle(title)
