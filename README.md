@@ -174,7 +174,29 @@ app.run()
 
 ```
 
+### EVENTS
+
+This example helps to understand the application events definition.
+
+```nim
+
+import rodster
+
+let events: RodsterAppEvents = (
+  initializer: RodsterAppEvent(proc (app: RodsterApplication) = stdout.write "hello"),
+  main: RodsterAppEvent(proc (app: RodsterApplication) = stdout.write " world"),
+  finalizer: RodsterAppEvent(proc (app: RodsterApplication) = echo "!")
+)
+
+run newRodsterApplication("Rodster Events Example", "1.0.0", events)
+
+```
+
 ## HISTORY
+* 17-01-22 *[1.2.0]*
+	- added constructor argument to accept app events
+	- added events example
+	- updated xam dependency
 * 03-01-22 *[1.1.0]*
 	- added app events getter and setter
 	- added individual app events getters

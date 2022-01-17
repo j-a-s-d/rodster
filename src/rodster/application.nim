@@ -42,6 +42,9 @@ let
     finalizer: DEFAULT_APPEVENT_HANDLER
   )
 
+template launchAppEvent(app: RodsterApplication, appEventHandler: RodsterAppEvent) =
+  ensure(appEventHandler, DEFAULT_APPEVENT_HANDLER)(app)
+
 proc wasTerminated*(app: RodsterApplication): bool =
   ## Returns true if the application was user terminated in the last run or false otherwise.
   app.terminated
@@ -102,7 +105,7 @@ proc setFinalizationHandler*(app: RodsterApplication, onFinalize: RodsterAppEven
   ## Sets the finalization handler.
   app.events.finalizer = onFinalize
 
-proc performStep(app: RodsterApplication, step: TRodsterAppStep, procedure: NoArgsProc[void]): bool =
+proc performStep(app: RodsterApplication, step: TRodsterAppStep, procedure: NoArgsVoidProc): bool =
   app.step = step
   var e: ref Exception
   catch(procedure, e)
@@ -116,24 +119,24 @@ proc run*(app: RodsterApplication) =
   ## Runs the application.
   app.terminated = false
   app.seh.forgetLastException()
-  if app.performStep(raInitializing, () => app.events.initializer(app)):
-    if app.performStep(raRunning, () => app.events.main(app)):
-      discard app.performStep(raFinalizing, () => app.events.finalizer(app))
+  if app.performStep(raInitializing, () => app.launchAppEvent(app.events.initializer)):
+    if app.performStep(raRunning, () => app.launchAppEvent(app.events.main)):
+      discard app.performStep(raFinalizing, () => app.launchAppEvent(app.events.finalizer))
   app.step = raStopped
 
 proc terminate*(app: RodsterApplication) =
   ## Terminates the application.
   ## NOTE: it will run the finalizer if invoked in initialization or running steps.
   if app.step == raInitializing or app.step == raRunning:
-    discard app.performStep(raFinalizing, () => app.events.finalizer(app))
+    discard app.performStep(raFinalizing, () => app.launchAppEvent(app.events.finalizer))
     throw(TRodsterAppTerminated, STRINGS_EMPTY)
 
-proc newRodsterApplication*(title: string = "", version: string = ""): RodsterApplication =
+proc newRodsterApplication*(title: string = STRINGS_EMPTY, version: string = STRINGS_EMPTY, events: RodsterAppEvents = DEFAULT_APPEVENTS): RodsterApplication =
   ## Constructs a new application object instance.
   result = new TRodsterApplication
   result.terminated = false
   result.step = raStopped
-  result.events = DEFAULT_APPEVENTS
+  result.events = events
   result.information = newRodsterAppInformation()
   if hasText(title):
     result.information.setTitle(title)

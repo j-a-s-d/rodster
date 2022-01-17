@@ -132,6 +132,9 @@ suite "test rodster":
       check(s == "main");
       s = "finalize"
     ))
+    check(app.getInitializationHandler() != nil)
+    check(app.getMainRoutine() != nil)
+    check(app.getFinalizationHandler() != nil)
     check(not app.isRunning())
     app.run()
     check(not app.isRunning())
@@ -161,3 +164,9 @@ suite "test rodster":
     app.setMainRoutine (app: RodsterApplication) => (s = "blah")
     app.run()
     check(not app.wasTerminated())
+    let evs2: RodsterAppEvents = (initializer: nil, main: nil, finalizer: nil)
+    let app2 = newRodsterApplication("test", "1.2.3", evs2)
+    app2.run()
+    check(not app2.isRunning())
+    check(not app2.wasTerminated())
+
