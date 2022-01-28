@@ -35,7 +35,7 @@ type
   ]
 
 let
-  DEFAULT_APPEVENT_HANDLER*: RodsterAppEvent = proc (app: RodsterApplication) = discard
+  DEFAULT_APPEVENT_HANDLER*: RodsterAppEvent = func (app: RodsterApplication) = discard
   DEFAULT_APPEVENTS*: RodsterAppEvents = (
     initializer: DEFAULT_APPEVENT_HANDLER,
     main: DEFAULT_APPEVENT_HANDLER,
@@ -45,63 +45,63 @@ let
 template launchAppEvent(app: RodsterApplication, appEventHandler: RodsterAppEvent) =
   ensure(appEventHandler, DEFAULT_APPEVENT_HANDLER)(app)
 
-proc wasTerminated*(app: RodsterApplication): bool =
+func wasTerminated*(app: RodsterApplication): bool =
   ## Returns true if the application was user terminated in the last run or false otherwise.
   app.terminated
 
-proc isRunning*(app: RodsterApplication): bool =
+func isRunning*(app: RodsterApplication): bool =
   ## Determines if the application is running.
   app.step != raStopped
 
-proc getInformation*(app: RodsterApplication): RodsterAppInformation =
+func getInformation*(app: RodsterApplication): RodsterAppInformation =
   ## Gets the information object instance.
   app.information
 
-proc getSettings*(app: RodsterApplication): RodsterAppSettings =
+func getSettings*(app: RodsterApplication): RodsterAppSettings =
   ## Gets the settings object instance.
   app.settings
 
-proc getSeh*(app: RodsterApplication): RodsterAppSeh =
+func getSeh*(app: RodsterApplication): RodsterAppSeh =
   ## Gets the seh object instance.
   app.seh
 
-proc getI18n*(app: RodsterApplication): RodsterAppI18n =
+func getI18n*(app: RodsterApplication): RodsterAppI18n =
   ## Gets the i18n object instance.
   app.i18n
 
-proc getKvm*(app: RodsterApplication): RodsterAppKvm =
+func getKvm*(app: RodsterApplication): RodsterAppKvm =
   ## Gets the kvm object instance.
   app.kvm
 
-proc getEvents*(app: RodsterApplication): RodsterAppEvents =
+func getEvents*(app: RodsterApplication): RodsterAppEvents =
   ## Gets the app events.
   app.events
 
-proc setEvents*(app: RodsterApplication, events: RodsterAppEvents) =
+func setEvents*(app: RodsterApplication, events: RodsterAppEvents) =
   ## Sets the app events all at once.
   app.events = events
 
-proc getInitializationHandler*(app: RodsterApplication): RodsterAppEvent =
+func getInitializationHandler*(app: RodsterApplication): RodsterAppEvent =
   ## Gets the initialization handler.
   app.events.initializer
 
-proc setInitializationHandler*(app: RodsterApplication, onInitialize: RodsterAppEvent) =
+func setInitializationHandler*(app: RodsterApplication, onInitialize: RodsterAppEvent) =
   ## Sets the initialization handler.
   app.events.initializer = onInitialize
 
-proc getMainRoutine*(app: RodsterApplication): RodsterAppEvent =
+func getMainRoutine*(app: RodsterApplication): RodsterAppEvent =
   ## Gets the main routine.
   app.events.main
 
-proc setMainRoutine*(app: RodsterApplication, programMain: RodsterAppEvent) =
+func setMainRoutine*(app: RodsterApplication, programMain: RodsterAppEvent) =
   ## Sets the main routine.
   app.events.main = programMain
 
-proc getFinalizationHandler*(app: RodsterApplication): RodsterAppEvent =
+func getFinalizationHandler*(app: RodsterApplication): RodsterAppEvent =
   ## Gets the finalization handler.
   app.events.finalizer
 
-proc setFinalizationHandler*(app: RodsterApplication, onFinalize: RodsterAppEvent) =
+func setFinalizationHandler*(app: RodsterApplication, onFinalize: RodsterAppEvent) =
   ## Sets the finalization handler.
   app.events.finalizer = onFinalize
 

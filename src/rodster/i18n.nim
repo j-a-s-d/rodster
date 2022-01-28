@@ -11,27 +11,27 @@ type
     strings: Table[string, StringTableRef]
   RodsterAppI18n* = ref TRodsterAppI18n
 
-proc getCurrentLocale*(i18n: RodsterAppI18n): string =
+func getCurrentLocale*(i18n: RodsterAppI18n): string =
   ## Returns the current locale.
   i18n.locale
 
-proc setCurrentLocale*(i18n: RodsterAppI18n, locale: string) =
+func setCurrentLocale*(i18n: RodsterAppI18n, locale: string) =
   ## Sets the current locale.
   ## NOTE: if it is the first to be set, it will be established as default also.
   i18n.locale = locale
   if isEmpty(i18n.default):
     i18n.default = locale
 
-proc resetLocaleTexts*(i18n: RodsterAppI18n, locale: string) =
+func resetLocaleTexts*(i18n: RodsterAppI18n, locale: string) =
   ## Resets the specified locale texts.
   ## NOTE: strings already loedad in the current locale with be dropped.
   i18n.strings[locale] = newStringTable()
 
-proc hasText*(i18n: RodsterAppI18n, locale: string, key: string): bool =
+func hasText*(i18n: RodsterAppI18n, locale: string, key: string): bool =
   ## Checks if the specified key exists at the loaded strings of the specified locale.
   i18n.strings.hasKey(locale) and i18n.strings[locale].hasKey(key)
 
-proc hasText*(i18n: RodsterAppI18n, key: string): bool =
+func hasText*(i18n: RodsterAppI18n, key: string): bool =
   ## Checks if the specified key exists at the loaded strings of the current locale.
   i18n.hasText(i18n.locale, key)
 
@@ -41,7 +41,7 @@ proc getText*(i18n: RodsterAppI18n, locale: string, key: string, values: seq[str
   ## NOTE: if the specified key requires parameters and the values passed does not satisfy the amount of them, the result will be the original string without replacements.
   proc processText(l: string): string =
     var msg = i18n.strings[l][key]
-    silent proc () = msg = msg % values
+    silent func () = msg = msg % values
     return msg
   if i18n.hasText(locale, key):
     processText(locale)
@@ -62,7 +62,7 @@ proc getText*(i18n: RodsterAppI18n, key: string): string =
   ## NOTE: if the specified key requires parameters and the values passed does not satisfy the amount of them, the result will be the original string without replacements.
   i18n.getText(i18n.locale, key, @[])
 
-proc loadTextsFromJArray*(i18n: RodsterAppI18n, locale: string, arr: JsonNode): bool =
+func loadTextsFromJArray*(i18n: RodsterAppI18n, locale: string, arr: JsonNode): bool =
   ## Loads the strings from the specified json object and returns the success result.
   ## NOTE: strings are added to the existing ones for the current locale.
   ## NOTE: if the current locale is not set yet, it is set to this locale by default.
@@ -83,7 +83,7 @@ proc loadTextsFromFile*(i18n: RodsterAppI18n, locale: string, filename: string):
   ## NOTE: if the current locale is not set yet, it is set to this locale by default.
   i18n.loadTextsFromJArray(locale, loadJsonNodeFromFile(filename))
 
-proc newRodsterAppI18n*(): RodsterAppI18n =
+func newRodsterAppI18n*(): RodsterAppI18n =
   ## Constructs a new internationalization object instance.
   result = new TRodsterAppI18n
   result.strings = initTable[string, StringTableRef]()

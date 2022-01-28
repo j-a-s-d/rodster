@@ -14,25 +14,25 @@ type
     validation: JsonModelValidationResult
   RodsterAppSettings* = ref TRodsterAppSettings
 
-proc has*(sets: RodsterAppSettings, key: string): bool =
+func has*(sets: RodsterAppSettings, key: string): bool =
   ## Checks if the specified key exists at the currently loaded settings.
   sets.validated && sets.data.hasKey(key)
 
-proc getAsBoolean*(sets: RodsterAppSettings, key: string): bool =
+func getAsBoolean*(sets: RodsterAppSettings, key: string): bool =
   ## Retrieves the boolean value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getBool()
   else:
     false
 
-proc getAsInteger*(sets: RodsterAppSettings, key: string): int =
+func getAsInteger*(sets: RodsterAppSettings, key: string): int =
   ## Retrieves the integer value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getInt()
   else:
     I0
 
-proc getAsFloat*(sets: RodsterAppSettings, key: string): float =
+func getAsFloat*(sets: RodsterAppSettings, key: string): float =
   ## Retrieves the float value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getFloat()
@@ -46,26 +46,26 @@ proc getAsString*(sets: RodsterAppSettings, key: string): string =
   else:
     STRINGS.EMPTY
 
-proc getAsJsonNode*(sets: RodsterAppSettings, key: string): JsonNode =
+func getAsJsonNode*(sets: RodsterAppSettings, key: string): JsonNode =
   ## Retrieves the json node at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key]
   else:
     nil
 
-proc getLastValidationResult*(sets: RodsterAppSettings): JsonModelValidationResult =
+func getLastValidationResult*(sets: RodsterAppSettings): JsonModelValidationResult =
   ## Retrieves the json model validation result.
   sets.validation
 
-proc getModel*(sets: RodsterAppSettings): JsonModel =
+func getModel*(sets: RodsterAppSettings): JsonModel =
   ## Retrieves the json model used to validate the loaded settings.
   sets.model
 
-proc getFilename*(sets: RodsterAppSettings): string =
+func getFilename*(sets: RodsterAppSettings): string =
   ## Retrieves the file name from where the settings are loaded.
   sets.filename
 
-proc loadFromJObject*(sets: RodsterAppSettings, obj: JsonNode): bool =
+func loadFromJObject*(sets: RodsterAppSettings, obj: JsonNode): bool =
   ## Loads the settings from the specified json object and returns the success result.
   sets.fromFile = false
   sets.validated = false
