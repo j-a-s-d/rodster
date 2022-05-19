@@ -23,12 +23,12 @@ proc onInitialize(app: RodsterApplication) =
 proc programRun(app: RodsterApplication) =
   let i18n = app.getI18n()
   # example using current locale
-  echo "[EN] " & i18n.getText("strings.hello", @["World"])
+  echo "[EN] " & i18n.getText("strings.hello", ["World"])
   # examples changing the current locale
   i18n.setCurrentLocale("ES")
-  echo "[ES] " & i18n.getText("strings.hello", @["Mundo"])
+  echo "[ES] " & i18n.getText("strings.hello", ["Mundo"])
   i18n.setCurrentLocale("PT")
-  echo "[PT] " & i18n.getText("strings.hello", @["Mundo"])
+  echo "[PT] " & i18n.getText("strings.hello", ["Mundo"])
   # examples without using the current locale
   echo "[FR] " & i18n.getText("FR", "strings.hello", @["Monde"])
   echo "[IT] " & i18n.getText("IT", "strings.hello", @["Mondo"])

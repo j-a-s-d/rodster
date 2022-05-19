@@ -126,12 +126,12 @@ proc onInitialize(app: RodsterApplication) =
 proc programRun(app: RodsterApplication) =
   let i18n = app.getI18n()
   # example using current locale
-  echo "[EN] " & i18n.getText("strings.hello", @["World"])
+  echo "[EN] " & i18n.getText("strings.hello", ["World"])
   # examples changing the current locale
   i18n.setCurrentLocale("ES")
-  echo "[ES] " & i18n.getText("strings.hello", @["Mundo"])
+  echo "[ES] " & i18n.getText("strings.hello", ["Mundo"])
   i18n.setCurrentLocale("PT")
-  echo "[PT] " & i18n.getText("strings.hello", @["Mundo"])
+  echo "[PT] " & i18n.getText("strings.hello", ["Mundo"])
   # examples without using the current locale
   echo "[FR] " & i18n.getText("FR", "strings.hello", @["Monde"])
   echo "[IT] " & i18n.getText("IT", "strings.hello", @["Mondo"])
@@ -205,6 +205,7 @@ import rodster, xam
 let app = newRodsterApplication("arguments test app", "1.0.0")
 app.setInitializationHandler proc (app: RodsterApplication) =
   let nfo = app.getInformation()
+  echo "has arguments: " & $nfo.hasArguments()
   echo "arguments count: " & $nfo.getArguments().len
   echo "arguments received: " & $nfo.getArguments()
   echo "argument 'help' received: " & $nfo.hasArgument("-help")
@@ -219,9 +220,13 @@ app.run()
 ```
 
 ## HISTORY
+* 19-05-22 *[1.3.1]*
+	- added hasArguments to the info module
+	- improved i18n getText implementation
+	- updated xam dependency
 * 28-01-22 *[1.3.0]*
-  - added getArguments, hasArgument, findArgumentsWithPrefix and getArgumentWithoutPrefix to the info module
-  - added arguments example
+	- added getArguments, hasArgument, findArgumentsWithPrefix and getArgumentWithoutPrefix to the info module
+	- added arguments example
 * 17-01-22 *[1.2.0]*
 	- added constructor argument to accept app events
 	- added events example

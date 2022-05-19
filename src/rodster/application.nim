@@ -119,16 +119,16 @@ proc run*(app: RodsterApplication) =
   ## Runs the application.
   app.terminated = false
   app.seh.forgetLastException()
-  if app.performStep(raInitializing, () => app.launchAppEvent(app.events.initializer)):
-    if app.performStep(raRunning, () => app.launchAppEvent(app.events.main)):
-      discard app.performStep(raFinalizing, () => app.launchAppEvent(app.events.finalizer))
+  if app.performStep(raInitializing, () => app.launchAppEvent(app.getInitializationHandler())):
+    if app.performStep(raRunning, () => app.launchAppEvent(app.getMainRoutine())):
+      discard app.performStep(raFinalizing, () => app.launchAppEvent(app.getFinalizationHandler()))
   app.step = raStopped
 
 proc terminate*(app: RodsterApplication) =
   ## Terminates the application.
   ## NOTE: it will run the finalizer if invoked in initialization or running steps.
   if app.step == raInitializing or app.step == raRunning:
-    discard app.performStep(raFinalizing, () => app.launchAppEvent(app.events.finalizer))
+    discard app.performStep(raFinalizing, () => app.launchAppEvent(app.getFinalizationHandler()))
     throw(TRodsterAppTerminated, STRINGS_EMPTY)
 
 proc newRodsterApplication*(title: string = STRINGS_EMPTY, version: string = STRINGS_EMPTY, events: RodsterAppEvents = DEFAULT_APPEVENTS): RodsterApplication =

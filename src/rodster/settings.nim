@@ -44,7 +44,7 @@ proc getAsString*(sets: RodsterAppSettings, key: string): string =
   if sets.has(key):
     sets.data[key].getStr()
   else:
-    STRINGS.EMPTY
+    STRINGS_EMPTY
 
 func getAsJsonNode*(sets: RodsterAppSettings, key: string): JsonNode =
   ## Retrieves the json node at the specified key from the currently loaded settings.
@@ -92,7 +92,7 @@ proc newRodsterAppSettings*(): RodsterAppSettings =
   ## Constructs a new settings object instance.
   result = new TRodsterAppSettings
   result.model = newJsonModel()
-  result.filename = STRINGS.EMPTY
+  result.filename = STRINGS_EMPTY
   result.fromFile = false
   result.data = nil
   result.validated = false

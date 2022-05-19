@@ -35,13 +35,14 @@ func hasText*(i18n: RodsterAppI18n, key: string): bool =
   ## Checks if the specified key exists at the loaded strings of the current locale.
   i18n.hasText(i18n.locale, key)
 
-proc getText*(i18n: RodsterAppI18n, locale: string, key: string, values: seq[string]): string =
+proc getText*(i18n: RodsterAppI18n, locale: string, key: string, values: openarray[string]): string =
   ## Gets the text for the specified key processed with the specified values for the specified locale.
   ## NOTE: if the specified key is not available in the specified locale it will try to load it from the default locale (the first being set).
   ## NOTE: if the specified key requires parameters and the values passed does not satisfy the amount of them, the result will be the original string without replacements.
+  let vals = newStringSeq(values)
   proc processText(l: string): string =
     var msg = i18n.strings[l][key]
-    silent func () = msg = msg % values
+    silent(func () = msg = msg % vals)
     return msg
   if i18n.hasText(locale, key):
     processText(locale)
@@ -50,7 +51,7 @@ proc getText*(i18n: RodsterAppI18n, locale: string, key: string, values: seq[str
   else:
     STRINGS_EMPTY
 
-proc getText*(i18n: RodsterAppI18n, key: string, values: seq[string]): string =
+proc getText*(i18n: RodsterAppI18n, key: string, values: openarray[string]): string =
   ## Gets the text for the specified key processed with the specified values for the current locale.
   ## NOTE: if the specified key is not available in the specified locale it will try to load it from the default locale (the first being set).
   ## NOTE: if the specified key requires parameters and the values passed does not satisfy the amount of them, the result will be the original string without replacements.
@@ -60,7 +61,7 @@ proc getText*(i18n: RodsterAppI18n, key: string): string =
   ## Gets the text for the specified key for the current locale.
   ## NOTE: if the specified key is not available in the specified locale it will try to load it from the default locale (the first being set).
   ## NOTE: if the specified key requires parameters and the values passed does not satisfy the amount of them, the result will be the original string without replacements.
-  i18n.getText(i18n.locale, key, @[])
+  i18n.getText(i18n.locale, key, newStringSeq())
 
 func loadTextsFromJArray*(i18n: RodsterAppI18n, locale: string, arr: JsonNode): bool =
   ## Loads the strings from the specified json object and returns the success result.

@@ -49,6 +49,10 @@ func getFilename*(info: RodsterAppInformation): string =
   ## Retrieves the application file name.
   info.filename
 
+func hasArguments*(info: RodsterAppInformation): bool =
+  ## Determines if the application has received any command line arguments.
+  info.arguments.len > 0
+
 func getArguments*(info: RodsterAppInformation): StringSeq =
   ## Retrieves the application arguments as a sequence of strings.
   info.arguments
@@ -62,7 +66,7 @@ func hasArgument*(info: RodsterAppInformation, values: varargs[string]): bool =
 
 func findArgumentsWithPrefix*(info: RodsterAppInformation, prefixes: openarray[string]): IntSeq =
   ## Retrieves a sequence of the indexes where the application arguments start with any of the specified prefixes.
-  result = @[]
+  result = newIntSeq()
   var x = 0
   info.arguments.each arg:
     prefixes.each prefix:
@@ -72,10 +76,11 @@ func findArgumentsWithPrefix*(info: RodsterAppInformation, prefixes: openarray[s
 
 func getArgumentWithoutPrefix*(info: RodsterAppInformation, index: int, prefixes: openarray[string]): string =
   ## Retrieves the specified application argument without the also specified matching prefix (if any).
-  result = info.arguments[index]
-  prefixes.each prefix:
-    if result.startsWith(prefix):
-      return result.replace(prefix, STRINGS_EMPTY)
+  if index > -1 and index < info.arguments.len:
+    result = info.arguments[index]
+    prefixes.each prefix:
+      if result.startsWith(prefix):
+        return result.replace(prefix, STRINGS_EMPTY)
 
 func calculateElapsedSecondsSinceCreation*(info: RodsterAppInformation): float =
   ## Retrieves the amount of seconds elapsed since the application was created as a float value.
