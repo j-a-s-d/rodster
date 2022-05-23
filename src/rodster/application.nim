@@ -9,6 +9,7 @@ reexport(settings, settings)
 reexport(seh, seh)
 reexport(i18n, i18n)
 reexport(kvm, kvm)
+reexport(mru, mru)
 
 type
   TRodsterAppStep = enum
@@ -26,13 +27,13 @@ type
     seh: RodsterAppSeh
     i18n: RodsterAppI18n
     kvm: RodsterAppKvm
+    mru: RodsterAppMru
   RodsterApplication* = ref TRodsterApplication
   RodsterAppEvent* = proc (app: RodsterApplication)
-  RodsterAppEvents* = tuple [
-    initializer: RodsterAppEvent,
-    main: RodsterAppEvent,
+  RodsterAppEvents* = tuple
+    initializer: RodsterAppEvent
+    main: RodsterAppEvent
     finalizer: RodsterAppEvent
-  ]
 
 let
   DEFAULT_APPEVENT_HANDLER*: RodsterAppEvent = func (app: RodsterApplication) = discard
@@ -72,6 +73,10 @@ func getI18n*(app: RodsterApplication): RodsterAppI18n =
 func getKvm*(app: RodsterApplication): RodsterAppKvm =
   ## Gets the kvm object instance.
   app.kvm
+
+func getMru*(app: RodsterApplication): RodsterAppMru =
+  ## Gets the mru object instance.
+  app.mru
 
 func getEvents*(app: RodsterApplication): RodsterAppEvents =
   ## Gets the app events.
@@ -146,3 +151,4 @@ proc newRodsterApplication*(title: string = STRINGS_EMPTY, version: string = STR
   result.seh = newRodsterAppSeh()
   result.i18n = newRodsterAppI18n()
   result.kvm = newRodsterAppKvm()
+  result.mru = newRodsterAppMru()

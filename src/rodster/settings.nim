@@ -51,7 +51,7 @@ func getAsJsonNode*(sets: RodsterAppSettings, key: string): JsonNode =
   if sets.has(key):
     sets.data[key]
   else:
-    nil
+    newJNull()
 
 func getLastValidationResult*(sets: RodsterAppSettings): JsonModelValidationResult =
   ## Retrieves the json model validation result.

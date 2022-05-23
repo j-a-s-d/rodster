@@ -8,6 +8,8 @@ an application framework for nim
 * modelled json settings, *allowing an easy, secure and structured way to validate and handle the application configuration*
 * internationalization support (I18n), *allowing localization (L10n) for the application messages*
 * multipurpose key value map, *allowing an easy application instance values management in an already integrated key-value store*
+* arguments handling services, *allowing a good handling of the parameters that the app received*
+* most recently used items list, *allowing bring this feature up to your end users without effort*
 
 ## CHARACTERISTICS
 
@@ -219,7 +221,38 @@ app.run()
 
 ```
 
+### MRUS
+
+This example helps to understand how to use the application's most recently used items list.
+
+``` nim
+
+## Just compile and run this with: nim c -r mrus.nim
+
+import rodster, xam
+
+let app = newRodsterApplication("mrus test app", "1.0.0")
+app.setInitializationHandler proc (app: RodsterApplication) =
+  let mru = app.getMru()
+  mru.setMaximum(3) # max by default is 10
+  mru.add("http://www.apple.com")
+  mru.add("http://www.google.com")
+  mru.add("http://www.microsoft.com")
+app.setMainRoutine proc (app: RodsterApplication) =
+  let mru = app.getMru()
+  echo "the app has the following mrus: " & $mru.getAsStringSeq()
+  echo "but adding a new one, makes the oldest to drop..."
+  mru.add("http://www.github.com")
+  echo "so now the app has the following mrus: " & $mru.getAsStringSeq()
+app.run()
+
+```
+
 ## HISTORY
+* 23-05-22 *[1.4.0]*
+	- added mru module
+	- added mrus example
+	- updated xam dependency
 * 19-05-22 *[1.3.1]*
 	- added hasArguments to the info module
 	- improved i18n getText implementation
