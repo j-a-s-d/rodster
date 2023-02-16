@@ -18,40 +18,40 @@ func has*(sets: RodsterAppSettings, key: string): bool =
   ## Checks if the specified key exists at the currently loaded settings.
   sets.validated && sets.data.hasKey(key)
 
-func getAsBoolean*(sets: RodsterAppSettings, key: string): bool =
+func getAsBoolean*(sets: RodsterAppSettings, key: string, default: bool = false): bool =
   ## Retrieves the boolean value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getBool()
   else:
-    false
+    default
 
-func getAsInteger*(sets: RodsterAppSettings, key: string): int =
+func getAsInteger*(sets: RodsterAppSettings, key: string, default: int = I0): int =
   ## Retrieves the integer value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getInt()
   else:
-    I0
+    default
 
-func getAsFloat*(sets: RodsterAppSettings, key: string): float =
+func getAsFloat*(sets: RodsterAppSettings, key: string, default: float = F0): float =
   ## Retrieves the float value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getFloat()
   else:
-    F0
+    default
 
-proc getAsString*(sets: RodsterAppSettings, key: string): string =
+proc getAsString*(sets: RodsterAppSettings, key: string, default: string = STRINGS_EMPTY): string =
   ## Retrieves the string value at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key].getStr()
   else:
-    STRINGS_EMPTY
+    default
 
-func getAsJsonNode*(sets: RodsterAppSettings, key: string): JsonNode =
+func getAsJsonNode*(sets: RodsterAppSettings, key: string, default: JsonNode = newJNull()): JsonNode =
   ## Retrieves the json node at the specified key from the currently loaded settings.
   if sets.has(key):
     sets.data[key]
   else:
-    newJNull()
+    default
 
 func getLastValidationResult*(sets: RodsterAppSettings): JsonModelValidationResult =
   ## Retrieves the json model validation result.

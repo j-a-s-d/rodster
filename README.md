@@ -249,6 +249,9 @@ app.run()
 ```
 
 ## HISTORY
+* 16-02-22 *[1.4.1]*
+	- added default value argument to settings retrieval methods
+	- updated xam dependency
 * 23-05-22 *[1.4.0]*
 	- added mru module
 	- added mrus example
